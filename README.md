@@ -1,0 +1,1 @@
+Hooma is a web-based application designed to facilitate an e-commerce platform for buying and selling furniture. For project detailed information, please check this [document](https://github.com/ollynth/hooma/blob/master/Hooma_Project_Design_Document.pdf).
