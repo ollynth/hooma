@@ -4,7 +4,8 @@ import path from 'path';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import authRouter from './routes/AuthRoutes.js';
-// import productRouter from './routes/productRoutes.js';
+import userRouter from './routes/UserRoutes.js';
+import productRouter from './routes/productRoutes.js';
 import connectDB from './config/db.js';
 
 dotenv.config(); 
@@ -17,9 +18,10 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use('/auth', authRouter);
+app.use('/', authRouter);
+app.use('/user', userRouter); 
 // app.use('/uploads', express.static(pathToUploads));
-// app.use("/api/products", productRouter)
+app.use("/products", productRouter);
 
 connectDB().then(() => {
     app.listen(PORT,() => {

@@ -5,6 +5,7 @@ const Schema = monggose.Schema;
 const productSchema = new Schema({
     name: { type: String, required: true },
     price: { type: Number, required: true, min: 0 },
+    stock: { type: Number, required: true, min: 0 },
     description: { type: String, required: true },
     category: { type: String, required: true },
     attributes: { type: Schema.Types.Mixed, default: {}},
@@ -12,5 +13,5 @@ const productSchema = new Schema({
     isActive: {type: Boolean, default: true}
 }, {timestamps: true});
 
-const Product = mongoose.model("Product", productSchema);
+const Product = monggose.model("Product", productSchema);
 export default Product;

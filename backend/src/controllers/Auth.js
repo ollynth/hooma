@@ -1,4 +1,4 @@
-import generateToken from "../utils/jwtUtils.js";
+import jwtUtils from "../utils/jwtUtils.js";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 
@@ -74,7 +74,7 @@ const loginUser = async(req, res) => {
             return res.status(401).json({message: "Invalid Credentials"});
         }
 
-        const token = generateToken(user);
+        const token = jwtUtils.generateToken(user);
 
         const userInfo = {
             id: user._id,
