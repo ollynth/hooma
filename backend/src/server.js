@@ -1,20 +1,25 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
+import cors from 'cors';
 import mongoose from 'mongoose';
-import productRouter from './routes/productRoutes.js';
+import authRouter from './routes/AuthRoutes.js';
+// import productRouter from './routes/productRoutes.js';
 import connectDB from './config/db.js';
 
-dotenv.config();
+dotenv.config(); 
 const PORT = process.env.PORT || 4001;
 const pathToUploads = path.join(path.resolve(), 'src/uploads');
 console.log('Uploads directory path:', pathToUploads);
 const app = express();
+app.use(cors({
+    origin: 'http://localhost:3000'
+}));
 
 app.use(express.json());
-
-app.use('/uploads', express.static(pathToUploads));
-app.use("/api/products", productRouter)
+app.use('/auth', authRouter);
+// app.use('/uploads', express.static(pathToUploads));
+// app.use("/api/products", productRouter)
 
 connectDB().then(() => {
     app.listen(PORT,() => {
