@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import authRouter from './routes/AuthRoutes.js';
 import userRouter from './routes/UserRoutes.js';
 import productRouter from './routes/productRoutes.js';
+import cartRouter from './routes/CartRoutes.js';
 import connectDB from './config/db.js';
 
 dotenv.config(); 
@@ -22,7 +23,7 @@ app.use('/', authRouter);
 app.use('/user', userRouter); 
 // app.use('/uploads', express.static(pathToUploads));
 app.use("/products", productRouter);
-
+app.use("/cart", cartRouter);
 connectDB().then(() => {
     app.listen(PORT,() => {
         console.log('Server is running on port:', PORT);

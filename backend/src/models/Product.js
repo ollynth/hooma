@@ -1,6 +1,6 @@
-import monggose from "mongoose";
+import mongoose from "mongoose";
 
-const Schema = monggose.Schema;
+const Schema = mongoose.Schema;
 
 const productSchema = new Schema({
     name: { type: String, required: true },
@@ -13,5 +13,5 @@ const productSchema = new Schema({
     isActive: {type: Boolean, default: true}
 }, {timestamps: true});
 
-const Product = monggose.model("Product", productSchema);
+const Product = mongoose.model("Product", productSchema);
 export default Product;

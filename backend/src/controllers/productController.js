@@ -67,7 +67,18 @@ async function updateProduct(req, res) {
     }
 
     try {
-        
+        const productId = req.params.id;
+        const updates = req.body;
+        const update = await Product.findByIdAndUpdate(productId, updates, { new: true });
+
+        if (!update) {
+            return res.status(404).json({ message: 'Product not found.' });
+        }
+        if (updates.stock !== undefined) {
+            update.isActive = updates.stock > 0 ? true : false;
+            await update.save();
+        }
+        res.status(200).json({ message: 'Product updated successfully', product: update });
     } catch (error) {
         console.error("Error updating product:", error);
         res.status(500).json({ message: 'Internal server error updating product.' });
