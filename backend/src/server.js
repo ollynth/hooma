@@ -8,6 +8,7 @@ import userRouter from './routes/UserRoutes.js';
 import productRouter from './routes/productRoutes.js';
 import cartRouter from './routes/CartRoutes.js';
 import connectDB from './config/db.js';
+import rateLimiter from './middleware/rateLimiter.js';
 
 dotenv.config(); 
 const PORT = process.env.PORT || 4001;
@@ -19,6 +20,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(rateLimiter);
 app.use('/', authRouter);
 app.use('/user', userRouter); 
 // app.use('/uploads', express.static(pathToUploads));
