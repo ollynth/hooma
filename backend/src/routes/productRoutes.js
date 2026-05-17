@@ -8,7 +8,7 @@ productRouter.get("/", ProductController.getAllProducts);
 productRouter.get("/:id", ProductController.getProductById);
 
 productRouter.post("/", jwtUtils.authenticateToken, ProductController.createProduct);
-// // productRouter.post("/", upload.single('image'), createProduct);
+// productRouter.post("/", upload.single('image'), createProduct);
 
 productRouter.put("/:id", jwtUtils.authenticateToken, ProductController.updateProduct);
 

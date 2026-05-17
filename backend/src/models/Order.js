@@ -56,6 +56,7 @@ const orderSchema = new Schema({
         city: String,
         state: String,
         zipCode: String,
+        country: String,
         notes: String
     },
     paymentMethod: {
@@ -70,4 +71,5 @@ const orderSchema = new Schema({
     }
 }, {timestamps: true});
 
-const Order = monggoose.model('Order', orderSchema);
+const Order = mongoose.model('Order', orderSchema);
+export default Order;

@@ -1,5 +1,5 @@
 // src/pages/CreateProduct.js
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createProduct } from '../api';
 import ProductForm from '../components/ProductForm';

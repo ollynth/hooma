@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const cartItemSchema = new Schema({
-    productID:{
+    productId:{
         type: Schema.Types.ObjectId,
         ref: 'Product',
         required: true
@@ -12,16 +12,11 @@ const cartItemSchema = new Schema({
         type: Number,
         required: true,
         min: 1
-    },
-    priceAtTimeofAdding: {
-        type: Number,
-        required: true,
-        min: 0
     }
 });
 
 const cartSchema = new Schema({
-    UserId: {
+    userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,

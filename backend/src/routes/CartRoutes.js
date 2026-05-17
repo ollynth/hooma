@@ -5,10 +5,7 @@ import CartController from "../controllers/CartController.js";
 const cartRouter = express.Router();
 
 cartRouter.get("/", jwtUtils.authenticateToken, CartController.getCart);
-
-cartRouter.post("/", jwtUtils.authenticateToken, CartController.addToCart);
-
-cartRouter.put("/", jwtUtils.authenticateToken, CartController.updateCartItem);
-
+cartRouter.post("/:productId", jwtUtils.authenticateToken, CartController.addToCart);
+cartRouter.put("/:productId", jwtUtils.authenticateToken, CartController.updateCartItem);
 cartRouter.delete("/", jwtUtils.authenticateToken, CartController.deleteCartItem);
 export default cartRouter;
