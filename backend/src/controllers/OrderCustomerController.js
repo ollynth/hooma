@@ -28,7 +28,27 @@ const getMyOrders = async(req, res) => {
     }
 }
 
-// POST /order/preview
+// GET /orders/:orderId
+const getOrderDetail = async(req, res) => {
+    try {
+        const order = await Order.findOne({
+            _id: req.params.orderId,
+            userId: req.user._id
+        })
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found.' });
+        }
+
+        res.status(200).json(order);
+        console.log(`Fetched details for order ${order._id} of user ${req.user._id}`);
+    } catch (error) {
+        console.error("Error fetching order detail:", error);
+        res.status(500).json({ message: 'Internal server error fetching order detail.' });  
+    }
+}
+
+// POST /orders/preview
 const previewOrder = async(req, res) => {
     try {
         const userId = req.user._id;
@@ -113,6 +133,7 @@ const previewOrder = async(req, res) => {
     }
 }
 
+// POST /orders
 const createOrder = async(req, res) => {
     try {
         const userId = req.user._id;
@@ -220,6 +241,37 @@ function generateOrderNumber() {
     return `HMA-${date}-${rand}`;   // e.g. HMA-20250517-3F9A1C2B
 }
 
+// PROCESS PAYMENT
+// POST /orders/:orderId/pay
+const payOrder = async(req, res) => {
+    try {
+        const {orderId} = req.params;
+        const userId = req.user._id;
+        const order = await Order.findOne({_id: orderId, userId: userId});
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found.' });
+        }
 
+        if (order.paymentStatus === 'Completed') {
+            return res.status(400).json({ message: 'Order is already paid.' });
+        }
 
-export default {getMyOrders, previewOrder, createOrder};
+        if (order.status === 'Cancelled') {
+            return res.status(400).json({ message: 'Cannot pay a cancelled order.' });
+        }
+
+        // PAYEMENT GATEWAY INTEGRATION
+
+        order.paymentStatus = 'Completed';
+        order.status = 'Processing';
+        await order.save();
+
+        res.status(200).json({ message: 'Payment successful, order is now processing.', order });
+
+    } catch (error) {
+        console.error('payOrder error:', error);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+}
+
+export default {getMyOrders, previewOrder, createOrder, payOrder};
