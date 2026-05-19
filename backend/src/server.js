@@ -13,11 +13,12 @@ import rateLimiter from './middleware/rateLimiter.js';
 
 dotenv.config(); 
 const PORT = process.env.PORT || 4001;
+const FE_PATH = process.env.FE_PATH;
 const pathToUploads = path.join(path.resolve(), './src/uploads');
 console.log('Uploads directory path:', pathToUploads);
 const app = express();
 app.use(cors({
-    origin: 'http://localhost:3000'
+    origin: FE_PATH
 }));
 
 app.use(express.json());
