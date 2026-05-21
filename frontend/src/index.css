@@ -202,6 +202,14 @@ body {
   font-weight: 500;
 }
 
+.label-md-sr {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  line-height: 1.4;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
 .material-symbols-outlined {
   font-variation-settings:
     'FILL' 0,
@@ -237,6 +245,105 @@ body {
   letter-spacing: var(--display-lg-letter-spacing);
   color: var(--primary);
   text-decoration: none;
+}
+
+.btn-primary {
+  width: 100%;
+  background-color: var(--primary-container);
+  color: var(--on-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 18px 24px;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary);
+    box-shadow: 0 4px 16px rgba(62, 39, 35, 0.2);
+}
+
+.btn-primary:active {
+    transform: scale(0.99);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-primary.loading {
+    color: transparent;
+}
+
+/* Google Button */
+.btn-google {
+    width: 100%;
+    background-color: var(--surface-container-lowest);
+    color: var(--on-surface);
+    border: 1px solid var(--outline-variant);
+    border-radius: 8px;
+    padding: 15px 24px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-google:hover {
+    background-color: var(--surface-container-low);
+    border-color: var(--outline);
+    box-shadow: 0 2px 8px rgba(62, 39, 35, 0.08);
+}
+
+.btn-google:active {
+    transform: scale(0.99);
+}
+
+.spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 24px 0;
+    color: var(--outline-variant);
+}
+
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--outline-variant);
 }
 
 .nav-links {
@@ -321,6 +428,71 @@ body {
   font-family: var(--font-sans);
   font-size: var(--label-sm-size);
 }
+
+/* LOGIN */
+.card {
+    background-color: var(--surface-container-lowest);
+    border-radius: 16px;
+    padding: 56px 48px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow:
+      0 1px 2px rgba(62, 39, 35, 0.04),
+      0 4px 16px rgba(62, 39, 35, 0.06),
+      0 16px 48px rgba(62, 39, 35, 0.04);
+    position: relative;
+    z-index: 2;
+    animation: fadeInUp 0.5s ease both;
+  }
+  
+.form-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--outline-variant);
+    padding: 10px 0;
+    color: var(--on-surface);
+    outline: none;
+    transition: border-color 0.2s ease;
+    width: 100%;
+}
+
+.form-input::placeholder {
+    color: var(--surface-dim);
+}
+
+.form-input:focus {
+    border-bottom-color: var(--primary-container);
+}
+
+.form-input.error {
+    border-bottom-color: var(--error);
+}
+
+.form-error {
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    color: var(--error);
+    margin-top: 4px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--outline);
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    transition: color 0.2s;
+  }
+
+  .password-toggle:hover {
+    color: var(--on-surface);
+  }
 
 /* RESPONSIVE */
 
