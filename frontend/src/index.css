@@ -136,10 +136,10 @@
 
 html, body, #root {
     height: 100%;
+  }
+  
+  body {
     background-color: var(--background);
-}
-
-body {
     font-family: 'Libre Caslon Text', serif;
 }
 
@@ -227,17 +227,6 @@ body {
   background: var(--background);
 }
 
-.navbar-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 24px 64px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-
 .logo {
   font-family: var(--font-serif);
   font-size: var(--display-lg-size);
@@ -248,7 +237,6 @@ body {
 }
 
 .btn-primary {
-  width: 100%;
   background-color: var(--primary-container);
   color: var(--on-primary);
   border: none;
@@ -320,11 +308,10 @@ body {
 
 .spinner {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    margin-left: 50%;
     transform: translate(-50%, -50%);
-    width: 18px;
-    height: 18px;
+    width: 10px;
+    height: 10px;
     border: 2px solid rgba(255,255,255,0.3);
     border-top-color: white;
     border-radius: 50%;

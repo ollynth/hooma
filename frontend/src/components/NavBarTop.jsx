@@ -1,17 +1,17 @@
 
 export default function NavBarTop() {
   return (
-    <header class="navbar w-full position-sticky top-0 z-50 backdrop-blur-md transition-opacity duration-300">
+    <header className="navbar w-full sticky top-0 z-50 backdrop-blur-sm transition-opacity duration-300"  style={{ backgroundColor: 'var(--surface-container-low)',  opacity: 0.85 }}>
       <div className="flex justify-between items-center w-full px-[64px] py-6 max-w-[1280px] mx-auto ">
         {/* left side navigation */}
         <div className="flex items-center gap-8">
-          <a class="logo" href="/">Hooma</a>
-          <nav class="nav-links">
-            <a classname="label-md text-on-surface-variant border-b border-primary hover:text-primary transition-colors duration-300" href="/login ">Home</a>
-            <a classname="label-md text-on-surface-variant hover:text-primary transition-colors duration-300" href="/catalog">Catalog</a>
-            <a classname="label-md text-on-surface-variant hover:text-primary transition-colors duration-300" href="/about">About</a>
+          <a className="logo" href="/">Hooma</a>
+          <nav className="nav-links">
+            <a className="label-md text-on-surface-variant border-b border-primary hover:text-primary transition-colors duration-300" href="/">Home</a>
+            <a className="label-md text-on-surface-variant hover:text-primary transition-colors duration-300" href="/catalog">Catalog</a>
+            <a className="label-md text-on-surface-variant hover:text-primary transition-colors duration-300" href="/about">About</a>
           </nav>
-        </div>
+        </div> 
 
         {/* right side navigation */}
         <div className="flex items-center gap-8">
