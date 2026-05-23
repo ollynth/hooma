@@ -131,6 +131,8 @@
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
   --radius-full: 9999px;
+
+   --navbar-height: 100px;
 };
 
 
@@ -221,10 +223,14 @@ html, body, #root {
   line-height: 1;
 }
 
-/* NAVBAR */
+.section-screen {
+  min-height: calc(100vh - var(--navbar-height));
+}
 
+/* NAVBAR */
 .navbar {
   background: var(--background);
+  height: var(--navbar-height);
 }
 
 .logo {
