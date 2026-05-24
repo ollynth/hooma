@@ -4,9 +4,10 @@ import Footer from "../components/Footer";
 import EyeIcon from "../components/icons/EyeIcon";
 import EyeIconOff from "../components/icons/EyeIconOff";
 import GoogleIcon from "../components/icons/GoogleIcon";
+import { loginUser } from "../middleware/api";
 
 export default function LoginPage(){
-    const [email, setEmail] = useState("");
+    const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState({});
@@ -15,11 +16,9 @@ export default function LoginPage(){
 
     const validate = () => {
       const err = {};
-      if (!email) {
-        err.email = "Email is required";
-      } else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        err.email = "Please enter a valid email address";
-      }
+      if (!identifier) {
+        err.identifier = "Email / or Username is required";
+      } 
 
       if (!password) {
         err.password = "Password is required.";
@@ -38,11 +37,19 @@ export default function LoginPage(){
       setError({});
       setLoading(true);
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setLoading(false);
-      setSuccess(true);
-    }
+      try {
+        const response = await loginUser(identifier, password); 
+        setLoading(false);
+        setSuccess(true);
+        if (response.token) {
+          localStorage.setItem('authToken', response.token);
+          window.location.href = '/';
+        }
+      } catch (err) {
+        setLoading(false);
+        setError({ submit: err.response?.data?.message || "Login failed. Please try again." });
+      }
+    };
 
     return (
       <>
@@ -71,16 +78,16 @@ export default function LoginPage(){
                   <input
                       id="email"
                       type="email"
-                      className={`form-input${error.email ? " error" : ""} body-md`}
+                      className={`form-input${error.identifier ? " error" : ""} body-md`}
                       placeholder="hello@example.com"
-                      value={email}
+                      value={identifier}
                       onChange={(e) => {
-                        setEmail(e.target.value);
-                        if (error.email) setError((prev) => ({ ...prev, email: undefined }));
+                        setIdentifier(e.target.value);
+                        if (error.identifier) setError((prev) => ({ ...prev, identifier: undefined }));
                       }}
                       autoComplete="email"
                     />
-                    {error.email && <span className="form-error">{error.email}</span>}
+                    {error.identifier && <span className="form-error">{error.identifier}</span>}
                 </div>
 
                 {/* password */}
@@ -113,6 +120,9 @@ export default function LoginPage(){
                   </div>
                     {error.password && <span className="form-error">{error.password}</span>}
                 </div>
+
+                {/* submit error */}
+                {error.submit && <div className="form-error mb-6">{error.submit}</div>}
 
                 {/* sign in button */}
                 <button 

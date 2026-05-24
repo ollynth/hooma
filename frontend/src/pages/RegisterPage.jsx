@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import EyeIcon from "../components/icons/EyeIcon";
 import EyeIconOff from "../components/icons/EyeIconOff";
 import GoogleIcon from "../components/icons/GoogleIcon";
+import { registerUser } from "../middleware/api";
 
 export default function RegisterPage() {
     const [email, setEmail] = useState("");
@@ -56,8 +57,18 @@ export default function RegisterPage() {
       setError({});
       setLoading(true);
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      try {
+             const response = await registerUser(firstName, lastName, email, password); 
+             setLoading(false);
+             setSuccess(true);
+             if (response.token) {
+               localStorage.setItem('authToken', response.token);
+               window.location.href = '/';
+             }
+           } catch (err) {
+             setLoading(false);
+             setError({ submit: err.response?.data?.message || "Registration failed. Please try again." });
+           }
       setLoading(false);
       setSuccess(true);
     }

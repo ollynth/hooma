@@ -23,7 +23,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(rateLimiter);
-app.use('/', authRouter);
+app.use('/auth', authRouter);
 app.use('/user', userRouter); 
 // app.use('/uploads', express.static(pathToUploads));
 app.use("/products", productRouter);
