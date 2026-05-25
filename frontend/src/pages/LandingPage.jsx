@@ -34,7 +34,7 @@ export default function LandingPage() {
                             <span className="label-sm text-secondary uppercase tracking-[0.2em] mb-4 block">Our Curations</span>
                             <h2 className="headline-lg text-primary">Intentional Spaces.</h2>
                         </div>
-                        <a className="label-md text-primary underline underline-offset-8" href="#">Browse All Categories</a>
+                        <a className="label-md text-primary underline underline-offset-8" href="/catalog">Browse All Categories</a>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-12 h-[400px] sm:h-[500px] lg:h-[600px]">
