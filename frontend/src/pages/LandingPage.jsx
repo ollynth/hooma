@@ -1,13 +1,7 @@
 // import { useState } from "react";
-import NavbarTop from "../components/NavBarTop";
-import Footer from "../components/Footer";
-import FooterFull from "../components/FooterFull";
-
 export default function LandingPage() {
     return (
         <>
-            <NavbarTop />
-
             <main className="w-full">
 
                 {/* Hero */}
@@ -138,9 +132,6 @@ export default function LandingPage() {
                 </section>
 
             </main>
-
-            <FooterFull />
-            <Footer />
         </>
     );
 }

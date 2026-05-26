@@ -1,6 +1,4 @@
 import { useState } from "react";
-import NavbarTop from "../components/NavBarTop";
-import Footer from "../components/Footer";
 import EyeIcon from "../components/icons/EyeIcon";
 import EyeIconOff from "../components/icons/EyeIconOff";
 import GoogleIcon from "../components/icons/GoogleIcon";
@@ -56,9 +54,6 @@ export default function LoginPage(){
       {console.log("login page rendered")}
 
       <div className="min-h-screen flex flex-col" style={{ color: 'var(--on-surface)', background: 'var(--background)' }}>
-
-        {/* Header */}
-        <NavbarTop />
 
         {/* Main Content */}
         <main className="position-relative z-10 flex flex-1 items-center justify-center px-16 py-4">
@@ -161,10 +156,6 @@ export default function LoginPage(){
             </>
           </div>
         </main>
-
-        {/* Footer */}
-        <Footer />
-
       </div>
 
       </>

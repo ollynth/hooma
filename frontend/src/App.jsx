@@ -12,13 +12,13 @@ import CustomerLayout from './layouts/CustomerLayout';
 function App() {
     return (
         <Router>
-            <Routes element= {<CustomerLayout />}>
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/sign-in" element={<LoginPage />} />
-                <Route path="/sign-up" element={<RegisterPage />} />
-                <Route path="/catalog" element={<CatalogPage />} />
-                {/* <Route path="/create" element={<CreateProduct />} />
-                <Route path="/product/:id" element={<ProductDetailsPage />} /> */}
+           <Routes>
+                <Route element={<CustomerLayout />}>
+                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/sign-in" element={<LoginPage />} />
+                    <Route path="/sign-up" element={<RegisterPage />} />
+                    <Route path="/catalog" element={<CatalogPage />} />
+                </Route>
             </Routes>
         </Router>
     );

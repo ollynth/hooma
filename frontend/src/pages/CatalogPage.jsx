@@ -1,7 +1,4 @@
 import { useState, useEffect } from "react";
-import NavbarTop from "../components/NavBarTop";
-import Footer from "../components/Footer";
-import FooterFull from "../components/FooterFull";
 import { Slider } from "@mui/material";
 import { fetchProducts } from "../middleware/api";
 import img from "../assets/default-img.jpg";
@@ -90,7 +87,6 @@ export default function CatalogPage() {
 
     return (
         <>
-            <NavbarTop />
 
             <main className="max-w-7xl mx-auto py-20 sm:px-8 lg:px-14">
                 {/* Header */}
@@ -360,9 +356,6 @@ export default function CatalogPage() {
                     </section>
                 </div>
             </main>
-
-            <FooterFull />
-            <Footer />
         </>
     );
 }
