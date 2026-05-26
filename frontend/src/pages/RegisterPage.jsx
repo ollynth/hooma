@@ -209,7 +209,7 @@ export default function RegisterPage() {
                             {error.confirmPassword && <span className="form-error">{error.confirmPassword}</span>}
                         </div>
 
-                        {/* sign in button */}
+                        {/* sign up button */}
                         <button 
                         type="button"
                         onClick={handleSubmit}
@@ -217,7 +217,7 @@ export default function RegisterPage() {
                         className={`btn-primary${loading ? " loading" : ""} label-md`}
                         >
                           {loading && <span className="spinner" />}
-                          Sign In
+                          Sign Up
                         </button>
 
                         {/* divider */}

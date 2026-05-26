@@ -9,7 +9,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('authToken');
     if (token) {
         config.headers['Authorization'] = `Bearer ${token}`;
     }
@@ -19,7 +19,7 @@ api.interceptors.request.use((config) => {
 // Authentication API calls
 export const loginUser = async (identifier, password) => {
     try {
-        const response = await api.post(`${API_BASE_URL}/auth/login`, { identifier, password });
+        const response = await api.post('/auth/login', { identifier, password });
         return response.data;
     } catch (err) {
         console.log('Backend error:', err.response?.data);
@@ -29,7 +29,7 @@ export const loginUser = async (identifier, password) => {
 
 export const registerUser = async (firstName, lastName, email, password) => {
     try {
-        const response = await api.post(`${API_BASE_URL}/auth/register`, { firstName, lastName, email, password });
+        const response = await api.post('/auth/register', { firstName, lastName, email, password });
         return response.data;
     } catch (err) {
         console.log('Backend error:', err.response?.data);
@@ -39,36 +39,36 @@ export const registerUser = async (firstName, lastName, email, password) => {
 
 // Product API calls
 export const fetchProducts = async () => {
-    const response = await api.get(`${API_BASE_URL}/products`);
+    const response = await api.get('/products');
     return response.data;
 };
 
 export const fetchDetailProducts = async (id) => {
-    const response = await api.get(`${API_BASE_URL}/products/${id}`);
+    const response = await api.get(`/products/${id}`);
     return response.data;
 };
 
 export const createProduct = async (productData) => {
-    const response = await api.post(`${API_BASE_URL}/products`, productData);
+    const response = await api.post('/products', productData);
     return response.data;
 };
 
 export const deleteProduct = async (productId) => {
-    await api.delete(`${API_BASE_URL}/products/${productId}`);
+    await api.delete(`/products/${productId}`);
 };
 
 export const updateProduct = async (productId, updatedData) => {
-    const response = await api.put(`${API_BASE_URL}/products/${productId}`, updatedData);
+    const response = await api.put(`/products/${productId}`, updatedData);
     return response.data;
 };
 
 // Cart API calls
 export const fetchCart= async () => {
-    const response = await api.get(`${API_BASE_URL}/cart`);
+    const response = await api.get('/cart');
     return response.data;
 };
 
-export const addToCart = async (productId) => {
-    const response = await api.post(`${API_BASE_URL}/cart/${productId}`);
+export const addToCart = async (productId, quantity) => {
+    const response = await api.post(`/cart/${productId}`, { quantity });
     return response.data;
 }

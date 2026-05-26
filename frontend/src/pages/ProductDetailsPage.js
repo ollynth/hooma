@@ -1,7 +1,7 @@
 // src/pages/ProductDetailsPage.js
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchProducts, deleteProduct } from '../api';
+import { fetchProducts, deleteProduct } from '../middleware/api';
 
 const ProductDetailsPage = () => {
     const { id } = useParams();

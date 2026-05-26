@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchDetailProducts } from "../middleware/api";
+import { fetchDetailProducts, addToCart } from "../middleware/api";
 import defaultImg from "../assets/default-img.jpg";
 
 export default function ProductDetailPage() {
@@ -12,6 +12,24 @@ export default function ProductDetailPage() {
     const [error, setError] = useState(null);
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
+    
+    const [cartStatus, setCartStatus] = useState("idle"); // idle | loading | success | error
+    const [cartMessage, setCartMessage] = useState("");
+
+    const handleAddToCart = async () => {
+        setCartStatus("loading");
+        try {
+            await addToCart(product._id, quantity);
+            setCartStatus("success");
+            setCartMessage("Added to cart.");
+        } catch (err) {
+            const msg = err.response?.data?.message || "Failed to add to cart.";
+            setCartMessage(msg);
+            setCartStatus("error");
+        } finally {
+            setTimeout(() => setCartStatus("idle"), 3000);
+        }
+    };
 
     useEffect(() => {
         const load = async () => {
@@ -54,8 +72,7 @@ export default function ProductDetailPage() {
                     <button
                         onClick={() => navigate("/catalog")}
                         className="label-md text-primary underline underline-offset-4"
-                    >
-                        Back to Catalog
+                    > Back to Catalog
                     </button>
                 </div>
             </>
@@ -64,7 +81,9 @@ export default function ProductDetailPage() {
 
     const images = product.images?.length > 0 ? product.images : [null];
     const isOutOfStock = product.stock === 0;
-    const attributes = product.attributes && typeof product.attributes === "object"
+    const attributes = Array.isArray(product.attributes)
+    ? product.attributes.flatMap((obj) => Object.entries(obj))
+    : product.attributes && typeof product.attributes === "object"
         ? Object.entries(product.attributes)
         : [];
 
@@ -223,13 +242,20 @@ export default function ProductDetailPage() {
                         {/* Action Buttons */}
                         <div className="flex flex-col gap-3">
                             <div className="flex gap-3">
-                                <button
-                                    disabled={isOutOfStock}
+                               <button
+                                    disabled={isOutOfStock || cartStatus === "loading"}
+                                    onClick={handleAddToCart}
                                     className="flex-1 py-4 label-md uppercase tracking-widest text-background transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
                                     style={{ backgroundColor: "var(--primary)" }}
                                 >
-                                    Add to Cart
+                                    {cartStatus === "loading" ? "Adding..." : "Add to Cart"}
                                 </button>
+                                {cartStatus !== "idle" && (
+                                    <p
+                                        className="label-sm"
+                                        style={{ color: cartStatus === "success" ? "green" : "var(--error)" }}
+                                    > {cartMessage} </p>
+                                )}
                                 <button
                                     className="w-14 h-14 flex items-center justify-center rounded-none transition-colors hover:bg-surface-container"
                                     style={{ border: "1px solid var(--outline-variant)" }}
