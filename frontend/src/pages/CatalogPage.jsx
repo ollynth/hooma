@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Slider } from "@mui/material";
 import { fetchProducts } from "../middleware/api";
 import img from "../assets/default-img.jpg";
 
 export default function CatalogPage() {
+    const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true);
@@ -245,6 +247,7 @@ export default function CatalogPage() {
                                         <div
                                             key={product.id}
                                             className="group cursor-pointer"
+                                            onClick={() => navigate(`/product/${product._id}`)}
                                         >
                                             <div className="aspect-[4/5] overflow-hidden bg-surface-container-low mb-6">
                                                 <img

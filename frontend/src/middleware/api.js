@@ -43,6 +43,11 @@ export const fetchProducts = async () => {
     return response.data;
 };
 
+export const fetchDetailProducts = async (id) => {
+    const response = await api.get(`${API_BASE_URL}/products/${id}`);
+    return response.data;
+};
+
 export const createProduct = async (productData) => {
     const response = await api.post(`${API_BASE_URL}/products`, productData);
     return response.data;
@@ -56,3 +61,14 @@ export const updateProduct = async (productId, updatedData) => {
     const response = await api.put(`${API_BASE_URL}/products/${productId}`, updatedData);
     return response.data;
 };
+
+// Cart API calls
+export const fetchCart= async () => {
+    const response = await api.get(`${API_BASE_URL}/cart`);
+    return response.data;
+};
+
+export const addToCart = async (productId) => {
+    const response = await api.post(`${API_BASE_URL}/cart/${productId}`);
+    return response.data;
+}
