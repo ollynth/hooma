@@ -5,68 +5,102 @@ import bcrypt from "bcryptjs";
 const registerUser = async (req, res) => {
     try {
 
-        const { username, email, password, profile} = req.body;
-    
-        if (!username || !email || !password) {
-            return res.status(400).json({ message: 'Please provide all required fields.' });
+        const { firstName, lastName, email, password, profile } = req.body;
+
+        // Validate required fields
+        if (!firstName || !email || !password) {
+            return res.status(400).json({
+                message: 'Please provide all required fields.'
+            });
         }
-    
+
+        // Generate username
+        const randomNumber = Math.floor(1000 + Math.random() * 9000);
+
+        const username =
+            `${firstName}${lastName || ''}${randomNumber}`
+                .replace(/\s+/g, '')
+                .toLowerCase();
+
+        // Check existing email or username
         const existingUser = await User.findOne({
             $or: [{ username }, { email }]
         });
-    
+
         if (existingUser) {
-            return res.status(400).json({ message: 'Username or email already in use.' });
+            return res.status(400).json({
+                message: 'Username or email already in use.'
+            });
         }
-    
+
+        // Hash password
         const saltRounds = 10;
-        const hasedPassword = await bcrypt.hash(password, saltRounds);
-    
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // Create user
         const newUser = new User({
+            firstName,
+            lastName,
             username,
             email,
-            passwordHash: hasedPassword,
-            profile, 
+            passwordHash: hashedPassword,
+            profile,
             role: 'customer'
         });
-    
+
         await newUser.save();
-        
-        res.status(201).json({ 
+
+        res.status(201).json({
             message: 'User registered successfully',
             user: {
                 id: newUser._id,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
                 username: newUser.username,
                 email: newUser.email,
                 role: newUser.role
             }
         });
+
     } catch (error) {
+
         console.error("Error during registration:", error);
+
         if (error.name === 'ValidationError') {
+
             let errors = {};
+
             Object.keys(error.errors).forEach((key) => {
                 errors[key] = error.errors[key].message;
             });
+
             return res.status(400).json({ errors });
         }
-        res.status(500).json({ message: 'Internal server error' });
-    }
 
-    
+        res.status(500).json({
+            message: 'Internal server error'
+        });
+    }
 };
 
 const loginUser = async(req, res) => {
     try {
-        const {username, password} = req.body;
+        const {identifier, password} = req.body;
 
-        if (!username || !password) {
-            return res.status(400).json({message: 'Please provide both username and password.'});
+        if (!identifier || !password) {
+            return res.status(400).json({message: 'Please provide both identifier and password.'});
         }
 
-        const user = await User.findOne({username});
+        // Find by username OR email
+        const user = await User.findOne({
+            $or: [
+                { username: identifier },
+                { email: identifier }
+            ]
+        });
+
         if (!user) {
-            return res.status(401).json({message: "Invallid Credentials"})
+            return res.status(401).json({message: "Invalid Credentials"})
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
@@ -87,8 +121,8 @@ const loginUser = async(req, res) => {
             message: "Login successful",
             token,
             user: userInfo
-        })
-        console.log(`User ${username} logged in successfully.`);
+        });
+        console.log(`User ${user.username} logged in successfully.`);
     } catch (error) {
         console.error("Error during login:", error);
         res.status(500).json({ message: 'Internal server error' });
