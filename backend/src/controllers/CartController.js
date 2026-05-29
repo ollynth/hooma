@@ -18,6 +18,7 @@ const getCart = async(req, res) => {
         const cart = await Cart.findOne({userId: req.user._id}).populate('items.productId');
 
         if (!cart || cart.items.length === 0) {
+            console.log("Cart is empty for user:", req.user._id);
             return res.status(404).json({ message: 'Cart is empty.' });
         }
 
@@ -43,7 +44,7 @@ const addToCart = async (req, res) => {
         const userId = req.user._id;
         const { productId } = req.params;           // from URL
         const { quantity = 1 } = req.body;          // optional, defaults to 1
-
+    
         if (!Number.isInteger(quantity) || quantity <= 0) {
             return res.status(400).json({ message: 'Quantity must be a positive integer.' });
         }
@@ -80,6 +81,7 @@ const addToCart = async (req, res) => {
         await cart.save();
         await cart.populate('items.productId');
 
+        console.log(`User ${userId} added product ${productId} (qty: ${quantity}) to cart.`);
         res.status(200).json({ message: 'Item added to cart.', cart });
     } catch (error) {
         console.error('addToCart error:', error);
@@ -124,6 +126,7 @@ const updateCartItem = async(req, res) => {
         await cart.save();
         await cart.populate('items.productId');
         
+        console.log(`User ${req.user._id} updated product ${productId} quantity to ${quantity} in cart.`);
         res.status(200).json({ message: 'Cart item updated successfully!',cart });
     } catch (error) {
         console.error("Error updating cart item:", error);
