@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 const addressSchema = new Schema({
+    label: {type : String, required: true},
     street: {type : String, required: true},
     city: {type : String, required: true},
     state: {type : String, required: true},

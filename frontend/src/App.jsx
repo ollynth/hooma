@@ -7,12 +7,14 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import LandingPage from './pages/LandingPage';
 import CatalogPage from './pages/CatalogPage';
+import ProfilePage from './pages/ProfilePage';
 import CustomerLayout from './layouts/CustomerLayout';
 
 function App() {
     return (
         <Router>
            <Routes>
+                <Route path="/profile" element={<ProfilePage />} />
                 <Route element={<CustomerLayout />}>
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/sign-in" element={<LoginPage />} />

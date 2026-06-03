@@ -72,3 +72,24 @@ export const addToCart = async (productId, quantity) => {
     const response = await api.post(`/cart/${productId}`, { quantity });
     return response.data;
 }
+
+export const updateCartItem = async (productId, quantity) => {
+    const response = await api.put(`/cart/${productId}`, { quantity });
+    return response.data;
+}
+
+export const deleteCartItem = async (productId) => {
+    const response = await api.delete(`/cart/${productId}`);
+    return response.data;
+};
+
+// User Profile API calls
+export const fetchUserProfile = async () => {
+    const response = await api.get('/user/profile');
+    return response.data;
+};
+
+export const updateUserProfile = async (profileData) => {
+    const response = await api.put('/user/profile', profileData);
+    return response.data;
+};
