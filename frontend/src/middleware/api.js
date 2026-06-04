@@ -1,7 +1,6 @@
 // src/middleware/api.js
 import axios from 'axios';
 
-// const API_BASE_URL = import.meta.env.VITE_BE_URL;
 const API_BASE_URL = process.env.REACT_APP_BE_URL;
 
 const api = axios.create({
@@ -78,8 +77,8 @@ export const updateCartItem = async (productId, quantity) => {
     return response.data;
 }
 
-export const deleteCartItem = async (productId) => {
-    const response = await api.delete(`/cart/${productId}`);
+export const deleteCartItem = async (productIds) => {
+    const response = await api.delete(`/cart`, { data: { productIds } });
     return response.data;
 };
 

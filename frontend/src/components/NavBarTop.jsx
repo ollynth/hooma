@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function NavBarTop() {
   const userIsLoggedIn = !!localStorage.getItem('authToken');
@@ -7,6 +8,13 @@ export default function NavBarTop() {
 
   const profileLink = userIsLoggedIn ? '/profile' : '/sign-in';
   const profileIcon = userIsLoggedIn ? 'person' : 'login';
+
+   const navigate = useNavigate();
+
+  const handleLogout = () => {
+            localStorage.removeItem('authToken');
+            navigate('/sign-in'); // Redirect to login page
+    };
 
   const navLinkClass = ({ isActive }) =>
     `label-md transition-colors duration-300 ${
@@ -71,6 +79,11 @@ export default function NavBarTop() {
               </button>
               </NavLink>
             </div>
+
+            <button className="flex items-center gap-3 px-4 py-3 label-md w-full rounded-lg transition-colors duration-200 hover:opacity-70"  onClick={handleLogout} style={{ color: "var(--error)" }}>
+                                    <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>logout</span>
+                                    Sign Out
+                                </button>
           </nav>
         </div>
 

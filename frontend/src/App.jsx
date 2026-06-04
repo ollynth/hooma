@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import LandingPage from './pages/LandingPage';
 import CatalogPage from './pages/CatalogPage';
+import CartPage from './pages/CartPage';
 import ProfilePage from './pages/ProfilePage';
 import CustomerLayout from './layouts/CustomerLayout';
 
@@ -21,6 +22,7 @@ function App() {
                     <Route path="/sign-up" element={<RegisterPage />} />
                     <Route path="/catalog" element={<CatalogPage />} />
                     <Route path="/product/:id" element={<ProductDetailPage />} />
+                    <Route path="/cart" element={<CartPage />} />
                 </Route>
             </Routes>
         </Router>

@@ -276,10 +276,7 @@ export default function CatalogPage() {
                                                     </h3>
 
                                                     <p className="font-label-md text-label-md text-primary whitespace-nowrap">
-                                                        $
-                                                        {Number(
-                                                            product.price
-                                                        ).toFixed(2)}
+                                                        {formatRupiah(product.price)}
                                                     </p>
                                                 </div>
                                             </div>
