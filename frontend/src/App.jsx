@@ -8,8 +8,12 @@ import RegisterPage from './pages/RegisterPage';
 import LandingPage from './pages/LandingPage';
 import CatalogPage from './pages/CatalogPage';
 import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';
 import ProfilePage from './pages/ProfilePage';
 import CustomerLayout from './layouts/CustomerLayout';
+import { clearIfExpired } from './utils/tokenUtils';
+
+clearIfExpired();
 
 function App() {
     return (
@@ -23,6 +27,7 @@ function App() {
                     <Route path="/catalog" element={<CatalogPage />} />
                     <Route path="/product/:id" element={<ProductDetailPage />} />
                     <Route path="/cart" element={<CartPage />} />
+                    <Route path="/checkout" element={<CheckoutPage />} />
                 </Route>
             </Routes>
         </Router>

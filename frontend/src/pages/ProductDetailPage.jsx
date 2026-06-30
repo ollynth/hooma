@@ -268,6 +268,7 @@ export default function ProductDetailPage() {
                                 disabled={isOutOfStock}
                                 className="w-full py-4 label-md uppercase tracking-widest text-primary transition-colors hover:bg-surface-container disabled:opacity-40 disabled:cursor-not-allowed"
                                 style={{ border: "1px solid var(--primary)" }}
+                                onClick={() => navigate("/checkout", { state: { buyNow: true, productId: product._id, quantity } })}
                             >
                                 Buy Now
                             </button>

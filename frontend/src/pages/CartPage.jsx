@@ -359,7 +359,7 @@ export default function CartPage() {
 
                             <button
                                 disabled={selectedIds.size === 0}
-                                onClick={() => navigate("/checkout")}
+                                onClick={() => navigate("/checkout", { state: { productIds: [...selectedIds] } })}
                                 className="w-full py-4 label-md uppercase tracking-widest text-background hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed mb-3"
                                 style={{ backgroundColor: "var(--primary)" }}
                             >

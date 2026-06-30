@@ -82,6 +82,27 @@ export const deleteCartItem = async (productIds) => {
     return response.data;
 };
 
+// Order API calls
+export const previewOrder = async (body) => {
+    const response = await api.post('/orders/preview', body);
+    return response.data;
+};
+
+export const createOrder = async (body) => {
+    const response = await api.post('/orders', body);
+    return response.data;
+};
+
+export const getMyOrders = async () => {
+    const response = await api.get('/orders');
+    return response.data;
+};
+
+export const getOrderDetail = async (orderId) => {
+    const response = await api.get(`/orders/${orderId}`);
+    return response.data;
+};
+
 // User Profile API calls
 export const fetchUserProfile = async () => {
     const response = await api.get('/user/profile');

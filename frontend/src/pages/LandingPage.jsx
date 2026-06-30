@@ -1,5 +1,7 @@
 // import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 export default function LandingPage() {
+    const navigate = useNavigate();
     return (
         <>
             <main className="w-full">
@@ -33,7 +35,7 @@ export default function LandingPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-12 h-[400px] sm:h-[500px] lg:h-[600px]">
                         {/* Furniture */}
-                        <div className="md:col-span-7 relative group overflow-hidden h-[800px]">
+                        <div className="md:col-span-7 relative group overflow-hidden h-[600px]">
                             <img
                                 alt="Furniture"
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
@@ -51,7 +53,7 @@ export default function LandingPage() {
                         </div>
 
                         {/* Lighting & Textiles Stack */}
-                        <div className="md:col-span-5 flex flex-col gap-4 lg:gap-6 h-[800px]">
+                        <div className="md:col-span-5 flex flex-col gap-4 lg:gap-6 h-[600px]">
                             <div className="flex-1 relative group overflow-hidden" style={{ backgroundColor: 'var(--surface-container-low)' }}>
                                 <img
                                     alt="Lighting"
@@ -96,7 +98,9 @@ export default function LandingPage() {
                                 <div key={item.name} className="flex flex-col group h-96">
                                     <div className="relative aspect-[3/4] overflow-hidden mb-6" style={{ backgroundColor: 'var(--surface)' }}>
                                         <img alt={item.alt} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src={item.img} />
-                                        <button className="absolute bottom-4 right-4 bg-primary text-background p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button className="absolute bottom-4 right-4 bg-primary text-background p-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                            onClick={() => navigate("/checkout", { state: { buyNow: true, productId: item._id, quantity: 1 } })}
+                                        >
                                             <span className="material-symbols-outlined text-[20px]">add</span>
                                         </button>
                                     </div>
