@@ -2,17 +2,8 @@ import Cart from "../models/Cart.js";
 import Product from "../models/Product.js";
 import mongoose from "mongoose";
 
-const checkUserRole = (req, res, role) => {
-    if (req.user.role !== role) {
-        res.status(403).json({ message: 'Access denied..' });
-        return false;
-    }
-    return true;
-}
-
 // GET /cart
 const getCart = async(req, res) => {
-    if (!checkUserRole(req, res, 'customer')) return;
     
     try {
         const cart = await Cart.findOne({userId: req.user._id}).populate('items.productId');
@@ -38,7 +29,6 @@ const getCart = async(req, res) => {
 
 // POST /cart/:productId
 const addToCart = async (req, res) => {
-    if (!checkUserRole(req, res, 'customer')) return;
 
     try {
         const userId = req.user._id;
@@ -57,7 +47,7 @@ const addToCart = async (req, res) => {
         if (!cart) cart = new Cart({ userId, items: [] });
 
         const existingIndex = cart.items.findIndex(
-            item => item.productId.toString() === productId
+            item => item.productId.equals(productId)
         );
 
         if (existingIndex > -1) {
@@ -89,55 +79,8 @@ const addToCart = async (req, res) => {
     }
 };
 
-const updateCartItem = async(req, res) => {
-    if (!checkUserRole(req, res, 'customer')) return;
-
-    try {
-        const { productId } = req.params;
-        const { quantity } = req.body;
-        
-        if (!productId || !quantity || quantity <= 0) {
-            return res.status(400).json({ message: 'Product ID and quantity are required.' });
-        }
-        
-        const [cart, product] = await Promise.all([
-            Cart.findOne({userId: req.user._id}),
-            Product.findById(productId).select('stock isActive')
-        ]);
-
-        if(!cart) {
-            return res.status(404).json({ message: 'Cart not found.' });
-        }
-
-        if (!product) {
-            return res.status(404).json({ message: 'Product not found.' });
-        }
-        
-        const itemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
-
-        if (itemIndex === -1) {
-            return res.status(404).json({ message: 'Item not found in cart.' });
-        }
-        if (quantity > product.stock) {
-            return res.status(400).json({ message: 'Requested quantity exceeds available stock.' });
-        }
-
-        cart.items[itemIndex].quantity = quantity;
-        await cart.save();
-        await cart.populate('items.productId');
-        
-        console.log(`User ${req.user._id} updated product ${productId} quantity to ${quantity} in cart.`);
-        res.status(200).json({ message: 'Cart item updated successfully!',cart });
-    } catch (error) {
-        console.error("Error updating cart item:", error);
-        res.status(500).json({ message: 'Internal server error updating cart item.' });
-    }
-}
-
 // DELETE /cart
 const deleteCartItem = async(req, res) => {
-    if (!checkUserRole(req, res, 'customer')) return;
-
     try {
         const { productIds } = req.body;
         if (!Array.isArray(productIds) || productIds.length === 0) {
@@ -167,4 +110,4 @@ const deleteCartItem = async(req, res) => {
         res.status(500).json({ message: 'Internal server error deleting cart item.' });
     }
 }
-export default {getCart, addToCart, updateCartItem, deleteCartItem};
+export default {getCart, addToCart, deleteCartItem};

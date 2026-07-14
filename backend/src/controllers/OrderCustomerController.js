@@ -4,14 +4,6 @@ import User from '../models/User.js';
 import Order from '../models/Order.js';
 import crypto from 'crypto';
 
-const checkUserRole = (req, res, role) => {
-    if (req.user.role !== role) {
-        res.status(403).json({ message: 'Access denied..' });
-        return false;
-    }
-    return true;
-}
-
 // GET /orders
 const getMyOrders = async(req, res) => {
     try {

@@ -1,14 +1,16 @@
 import express from "express";
 import jwtUtils from "../utils/jwtUtils.js";
 import OrderCustomerController from "../controllers/OrderCustomerController.js";
+import requireRole from "../middleware/checkUserRole.js";
 
 const orderRouter = express.Router();
-const auth = jwtUtils.authenticateToken;
+orderRouter.use(jwtUtils.authenticateToken);
 
 // CUSTOMERS
-orderRouter.get("/", auth, OrderCustomerController.getMyOrders);
-orderRouter.post("/preview", auth, OrderCustomerController.previewOrder);
-orderRouter.post("/", auth, OrderCustomerController.createOrder);
+orderRouter.use(requireRole('customer'));
+orderRouter.get("/", OrderCustomerController.getMyOrders);
+orderRouter.post("/preview", OrderCustomerController.previewOrder);
+orderRouter.post("/", OrderCustomerController.createOrder);
 
 // ADMIN
 
