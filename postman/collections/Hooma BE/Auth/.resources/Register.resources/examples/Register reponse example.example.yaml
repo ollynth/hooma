@@ -1,0 +1,51 @@
+$kind: http-example
+request:
+  url: "{{BASE_URL}}/auth/register"
+  method: POST
+  body:
+    type: json
+    content: "{\r
+
+      \    \"firstName\": \"Lala\",\r
+
+      \    \"lastName\": \"Xio\",\r
+
+      \    \"email\": \"xlala@example.com\",\r
+
+      \    \"phoneNumber\": \"08912435465\",\r
+
+      \    \"password\": \"Lala1234\",\r
+
+      \    \"confirmPassword\": \"Lala1234\"\r
+
+      }"
+response:
+  statusCode: 201
+  statusText: Created
+  headers:
+    x-powered-by: Express
+    access-control-allow-origin: http://localhost:3000
+    vary: Origin
+    access-control-allow-credentials: "true"
+    x-ratelimit-limit: "100"
+    x-ratelimit-remaining: "96"
+    date: Thu, 09 Jul 2026 02:35:33 GMT
+    x-ratelimit-reset: "1783564566"
+    content-type: application/json; charset=utf-8
+    content-length: "154"
+    etag: W/"9a-BCcHMmXQFm6bWaLt1uavutG5/WY"
+    connection: keep-alive
+    keep-alive: timeout=5
+  body:
+    type: json
+    content: |-
+      {
+        "message": "User registered successfully",
+        "user": {
+          "id": "6a4f08f5407785498d904650",
+          "username": "lalaxio7395",
+          "email": "xlala@example.com",
+          "role": "customer"
+        }
+      }
+order: 1783564551192

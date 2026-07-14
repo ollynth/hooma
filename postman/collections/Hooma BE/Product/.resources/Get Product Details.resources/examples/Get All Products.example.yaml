@@ -1,0 +1,90 @@
+$kind: http-example
+request:
+  url: "{{BASE_URL}}products"
+  method: GET
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    x-powered-by: Express
+    access-control-allow-origin: http://localhost:3000
+    vary: Origin
+    x-ratelimit-limit: "100"
+    x-ratelimit-remaining: "98"
+    date: Tue, 30 Jun 2026 19:23:25 GMT
+    x-ratelimit-reset: "1782847444"
+    content-type: application/json; charset=utf-8
+    content-length: "969"
+    etag: W/"3c9-OHxw8lrlZMJ8wmrIEukHJH02la0"
+    connection: keep-alive
+    keep-alive: timeout=5
+  body:
+    type: json
+    content: |-
+      [
+        {
+          "_id": "6a08a8b077cddf82d35f67f9",
+          "name": "bantal kepala",
+          "price": 100,
+          "stock": 98,
+          "description": "bantal buat bobo",
+          "category": "bedroom",
+          "attributes": [
+            {
+              "color": "white"
+            }
+          ],
+          "images": [
+            "/uploads/default_img.jpeg"
+          ],
+          "isActive": true,
+          "createdAt": "2026-05-16T17:26:08.908Z",
+          "updatedAt": "2026-06-04T06:12:26.296Z",
+          "__v": 0
+        },
+        {
+          "_id": "6977d2807046eaf904cd60ad",
+          "name": "kasur b",
+          "price": 100,
+          "stock": 99,
+          "description": "kasurrr buat bobo jg",
+          "category": "bedroom",
+          "attributes": [
+            {
+              "height": 100,
+              "width": 60,
+              "color": "white"
+            }
+          ],
+          "images": [
+            "/uploads/default_img.jpeg"
+          ],
+          "isActive": true,
+          "createdAt": "2026-01-26T20:45:52.742Z",
+          "updatedAt": "2026-06-04T06:12:26.326Z",
+          "__v": 0
+        },
+        {
+          "_id": "6977d1f306f631a35703d88d",
+          "name": "kasur a",
+          "price": 120,
+          "stock": 90,
+          "description": "kasurrr buat bobo",
+          "category": "bedroom",
+          "attributes": [
+            {
+              "height": 100,
+              "width": 80,
+              "color": "white"
+            }
+          ],
+          "images": [
+            "/uploads/default_img.jpeg"
+          ],
+          "isActive": true,
+          "createdAt": "2026-01-26T20:43:31.595Z",
+          "updatedAt": "2026-06-04T06:12:26.352Z",
+          "__v": 0
+        }
+      ]
+order: 1782847422419

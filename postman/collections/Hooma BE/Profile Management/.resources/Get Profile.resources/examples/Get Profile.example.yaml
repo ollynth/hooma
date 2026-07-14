@@ -1,0 +1,52 @@
+$kind: http-example
+request:
+  url: "{{BASE_URL}}user/profile"
+  method: GET
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    x-powered-by: Express
+    access-control-allow-origin: http://localhost:3000
+    vary: Origin
+    x-ratelimit-limit: "100"
+    x-ratelimit-remaining: "98"
+    date: Tue, 30 Jun 2026 18:34:17 GMT
+    x-ratelimit-reset: "1782844480"
+    content-type: application/json; charset=utf-8
+    content-length: "482"
+    etag: W/"1e2-s+D27SLgBfnpYza6UGBgv2iOW04"
+    connection: keep-alive
+    keep-alive: timeout=5
+  body:
+    type: json
+    content: |-
+      {
+        "user": {
+          "profile": {
+            "firstName": "Diana",
+            "lastName": "Prince",
+            "phoneNumber": "+6284567890123"
+          },
+          "_id": "6977a98b53081441e85505d6",
+          "username": "diana_prince",
+          "email": "diana.prince@example.com",
+          "role": "customer",
+          "addresses": [
+            {
+              "label": "home",
+              "street": "Jalan Yang Benar No 1",
+              "city": "Kota Kasih",
+              "state": "XYZ",
+              "zipCode": "12345",
+              "country": "Negri di atas awan",
+              "notes": "",
+              "_id": "6a09e83d01d975b16c636994"
+            }
+          ],
+          "createdAt": "2026-01-26T17:51:07.374Z",
+          "updatedAt": "2026-06-05T14:24:17.996Z",
+          "__v": 0
+        }
+      }
+order: 1782844491649

@@ -1,0 +1,23 @@
+$kind: http-request
+name: Register
+url: "{{BASE_URL}}/auth/register"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"firstName\": \"Lala\",\r
+
+    \    \"lastName\": \"Xio\",\r
+
+    \    \"email\": \"xlala@example.com\",\r
+
+    \    \"phoneNumber\": \"08912435465\",\r
+
+    \    \"password\": \"Lala1234\",\r
+
+    \    \"confirmPassword\": \"Lala1234\"\r
+
+    }"
+examples: .resources/Register.resources/examples
+order: 1416838914790063

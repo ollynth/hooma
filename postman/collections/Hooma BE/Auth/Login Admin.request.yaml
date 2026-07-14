@@ -1,0 +1,22 @@
+$kind: http-request
+name: Login Admin
+url: "{{BASE_URL}}auth/login"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"username\" : \"admin\",\r
+
+    \    \"password\" : \"admin123\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "const response = pm.response.json();\r
+
+      pm.environment.set(\"ADM_TOKEN\", response.token);"
+    language: text/javascript
+settings:
+  disableCookies: false
+order: 1670

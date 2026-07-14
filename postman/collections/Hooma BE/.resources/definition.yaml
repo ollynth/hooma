@@ -1,0 +1,35 @@
+$kind: collection
+name: Hooma BE
+variables:
+  csrfToken: ""
+scripts:
+  - type: http:beforeRequest
+    code: "const csrf = pm.collectionVariables.get(\"csrfToken\");\r
+
+      console.log(\"csrf : \", csrf)\r
+
+      if (csrf) {\r
+
+      \    pm.request.headers.upsert({\r
+
+      \        key: \"x-csrf-token\",\r
+
+      \        value: csrf\r
+
+      \    });\r
+
+      }"
+    language: text/javascript
+auth:
+  - id: f65a1592-e987-4383-ba90-4bd657140bee
+    type: bearer
+    name: Bearer Token ADM
+    description: Authentication for admin
+    credentials:
+      token: "{{ADM_TOKEN}}"
+  - id: 3609cbde-2c09-4bf1-b95b-5a1e59e39b7d
+    type: bearer
+    name: Bearer Token CUST
+    description: Authentication for customer
+    credentials:
+      token: "{{CUST_TOKEN}}"

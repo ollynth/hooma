@@ -1,0 +1,6 @@
+$kind: http-request
+name: Get Profile
+url: "{{BASE_URL}}/user/profile"
+method: GET
+examples: .resources/Get Profile.resources/examples
+order: 1782844270375

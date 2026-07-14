@@ -1,0 +1,6 @@
+$kind: http-request
+name: Get Product Details
+url: "{{BASE_URL}}/products/6977d2807046eaf904cd60ad"
+method: GET
+examples: .resources/Get Product Details.resources/examples
+order: 1000

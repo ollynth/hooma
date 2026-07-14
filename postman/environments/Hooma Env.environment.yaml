@@ -1,0 +1,10 @@
+name: Hooma Env
+values:
+  - key: BASE_URL
+    value: ''
+  - key: CUST_TOKEN
+    secret: true
+  - key: ADM_TOKEN
+    secret: true
+  - key: CSRF_TOKEN
+    value: ''

@@ -1,0 +1,21 @@
+$kind: http-request
+name: Logout
+url: "{{BASE_URL}}/auth/logout"
+method: POST
+headers:
+  x-csrf-token: ""
+scripts:
+  - type: beforeRequest
+    code: "// console.log(\"Pre-request script running\");\r
+
+      // const csrfToken = pm.cookies.get(\"csrfToken\");\r
+
+      // if (csrfToken) {\r
+
+      //     pm.request.headers.upsert({ key: \"x-csrf-token\", value: csrfToken });\r
+
+      // }"
+    language: text/javascript
+settings:
+  disableCookies: false
+order: 89529416419240
