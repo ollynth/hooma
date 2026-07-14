@@ -10,20 +10,22 @@ import cartRouter from './routes/CartRoutes.js';
 import orderRouter from './routes/OrderRoutes.js';
 import connectDB from './config/db.js';
 import rateLimiter from './middleware/rateLimiter.js';
+import cookieParser from "cookie-parser";
+import { verifyCsrfToken } from "./middleware/csrf.js";
 
 dotenv.config(); 
 const PORT = process.env.PORT || 4001;
-const FE_PATH = process.env.FE_PATH;
 const pathToUploads = path.join(path.resolve(), './src/uploads');
 console.log('Uploads directory path:', pathToUploads);
+
 const app = express();
-app.use(cors({
-    origin: FE_PATH
-}));
+app.use(cookieParser());
+app.use(cors({ origin: process.env.FE_PATH, credentials: true }));
+app.use(verifyCsrfToken); 
 
 app.use(express.json());
 app.use(rateLimiter);
-app.use('/', authRouter);
+app.use('/auth', authRouter);
 app.use('/user', userRouter); 
 // app.use('/uploads', express.static(pathToUploads));
 app.use("/products", productRouter);

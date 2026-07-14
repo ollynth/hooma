@@ -1,19 +1,17 @@
+//src/utils/jwtUtils.js
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-function generateToken(user) {
-    const payload = {
-        id: user._id,
-        username: user.username,
-        role: user.role
-    };
-
-    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
-};
+function generateToken(user, expiresIn = process.env.JWT_EXPIRES_IN) {
+    const payload = { id: user._id, username: user.username, role: user.role };
+    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
+}
 
 async function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    // const authHeader = req.headers['authorization'];
+    // const token = authHeader && authHeader.split(' ')[1];
+
+    const token = req.cookies?.authToken;
     
     if (!token) {
         return res.status(401).json({ message: 'Access token is missing' });

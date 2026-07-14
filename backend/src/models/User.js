@@ -5,13 +5,29 @@ const addressSchema = new Schema({
     street: {type : String, required: true},
     city: {type : String, required: true},
     state: {type : String, required: true},
-    zipCode: {type : String, required: true},
     country: {type : String, required: true},
+    zipCode: {type : String, required: true},
+    label: {type : String, default: "Home"},    
     notes: {type : String, default: ""}
 }, {_id: true});
 
 const userSchema = new Schema({
     username: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    firstName: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    lastName: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    phoneNumber: {
         type: String,
         required: true,
         unique: true
@@ -31,10 +47,10 @@ const userSchema = new Schema({
         enum: ['customer', 'admin'],
         default: 'customer'
     },
-    profile: {
-        firstName: String,
-        lastName: String,
-        phoneNumber: String
+    status: {
+        type: String,
+        enum: ['active', 'inactive', 'suspended'],
+        default: 'active'
     },
     addresses: [addressSchema]
 }, {timestamps: true});
