@@ -4,5 +4,5 @@ url: "{{BASE_URL}}/cart/6a08a8b077cddf82d35f67f9"
 method: POST
 body:
   type: json
-  content: "{\r\n    \"quantity\" : 10\r\n}"
-order: 1750976268026
+  content: "{\r\n    \"quantity\" : 3\r\n}"
+order: 1000

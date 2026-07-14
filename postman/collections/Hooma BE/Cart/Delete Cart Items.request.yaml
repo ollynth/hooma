@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{BASE_URL}}/cart"
+method: DELETE
+body:
+  type: json
+  content: "{\r
+
+    \    \"productIds\" : [\"6a08a8b077cddf82d35f67f9\"]\r
+
+    }"
+order: 1976
