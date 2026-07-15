@@ -7,4 +7,4 @@ values:
   - key: ADM_TOKEN
     secret: true
   - key: CSRF_TOKEN
-    value: ''
+    secret: true

@@ -1,20 +1,14 @@
 $kind: http-request
 name: Update Profile
-url: "{{BASE_URL}}/profile/"
-method: POST
+url: "{{BASE_URL}}/user/profile"
+method: PUT
 body:
   type: json
   content: "{\r
 
-    \    \"firstName\": \"\",\r
+    \    \"phoneNumber\": \"08912435499\",\r
 
-    \    \"lastName\": \"\",\r
-
-    \    \"phoneNumber\": \"\",\r
-
-    \    \"email\" : \"\",\r
-
-    \    \"username\" : \"\"\r
+    \    \"email\" : \"1xlala@example.com\"\r
 
     }"
 order: 1096385001513490

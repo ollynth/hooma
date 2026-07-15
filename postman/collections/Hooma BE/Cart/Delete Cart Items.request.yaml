@@ -1,11 +1,8 @@
 $kind: http-request
+name: Delete Cart Items
 url: "{{BASE_URL}}/cart"
 method: DELETE
 body:
   type: json
-  content: "{\r
-
-    \    \"productIds\" : [\"6a08a8b077cddf82d35f67f9\"]\r
-
-    }"
+  content: "{\r\n\r\n    \    \"productIds\" : [\"6a08a8b077cddf82d35f67f9\"]\r\n\r\n    }"
 order: 1976

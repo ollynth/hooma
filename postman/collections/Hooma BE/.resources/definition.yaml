@@ -1,7 +1,8 @@
 $kind: collection
 name: Hooma BE
 variables:
-  csrfToken: ""
+  - key: csrfToken
+    secret: true
 scripts:
   - type: http:beforeRequest
     code: "const csrf = pm.collectionVariables.get(\"csrfToken\");\r
