@@ -3,7 +3,7 @@ import User from "../models/User.js";
 const getUserProfile = async (req, res) => {
     try {
         const userId= req.user._id;
-        const user = await User.findById(userId).select('-passwordHash');
+        const user = await User.findById(userId).select('-passwordHash').lean();
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -18,13 +18,22 @@ const getUserProfile = async (req, res) => {
 const updateUserProfile = async (req, res) => {
     try {
         const userId = req.user._id;
-        const updates = req.body;
-        const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true }).select('-passwordHash');
+        const allowedFields = ['firstName', 'lastName', 'phoneNumber', 'email', 'username', 'addresses'];
+        const updates = {};
+        for (const field of allowedFields) {
+            if (req.body[field] !== undefined) updates[field] = req.body[field];
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            updates,
+            { new: true, runValidators: true }
+        ).select('-passwordHash');
+
         if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' });
         }
         res.status(200).json({ user: updatedUser });
-        
     } catch (error) {
         console.error("Error updating user profile:", error);
         res.status(500).json({ message: 'Internal server error updating profile.' });

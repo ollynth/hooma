@@ -1,0 +1,20 @@
+$kind: http-request
+name: Update Profile
+url: "{{BASE_URL}}/profile/"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"firstName\": \"\",\r
+
+    \    \"lastName\": \"\",\r
+
+    \    \"phoneNumber\": \"\",\r
+
+    \    \"email\" : \"\",\r
+
+    \    \"username\" : \"\"\r
+
+    }"
+order: 1096385001513490
