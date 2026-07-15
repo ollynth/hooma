@@ -1,0 +1,28 @@
+$kind: http-request
+name: Create Cust Order
+url: "{{BASE_URL}}/orders/"
+method: POST
+body:
+  type: json
+  content: "// {\r
+
+    //     \"buyNow\": true,\r
+
+    //     \"productId\": \"6a08a8b077cddf82d35f67f9\",\r
+
+    //     \"quantity\": 2\r
+
+    // }\r
+
+    \r
+
+    {\r
+
+    \    // \"checkoutItems\" : [\r
+
+    \    //     { \"productId\": \"6977d1f306f631a35703d88d\", \"quantity\": 13 }\r
+
+    \    // ]\r
+
+    }"
+order: 1977

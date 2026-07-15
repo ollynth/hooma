@@ -40,66 +40,106 @@ const getOrderDetail = async(req, res) => {
     }
 }
 
-// POST /orders/preview
-const previewOrder = async(req, res) => {
-    try {
-        const userId = req.user._id;
-        const {productIds, buyNow, productId, quantity = 1} = req.body;
-        
-        let itemsToPreview = [];
-
-        if(buyNow) {
-            if (!productId) {
-                return res.status(400).json({ message: 'productId is required for buyNow.' });
-            }
-
-            const product = await Product.findById(productId);
-            if (!product) {
-                return res.status(404).json({ message: 'Product not found.' });
-            } 
-            if (quantity > product.stock) {
-                return res.status(400).json({ message: `Only ${product.stock} items in stock.` });
-            }
-
-            itemsToPreview = [{product, quantity}];
-        } else {
-            const cart = await Cart.findOne({userId}).populate('items.productId');
-            if (!cart || cart.items.length === 0) {
-                return res.status(400).json({ message: 'Cart is empty.' });
-            }
-
-            const selected = cart.items.filter(item => {
-                if (!item.productId?.isActive) return false;
-                if (productIds && productIds.length > 0) {
-                    return productIds.includes(item.productId._id.toString());
-                }
-                return true;
-            });
-
-            if (selected.length === 0) {
-                return res.status(400).json({ message: 'No valid products selected for preview.' });
-            }
-
-            const stockErrors = [];
-            for (const item of selected) {
-                if (item.quantity > item.productId.stock) {
-                    stockErrors.push(`"${item.productId.name}" only has ${item.productId.stock} unit(s) left.`);
-                }
-            }
-
-            if (stockErrors.length > 0) {
-                return res.status(400).json({ message: 'Stock issues found:', errors: stockErrors });
-            }
-
-            itemsToPreview = selected.map(item => ({
-                product: item.productId,
-                quantity: item.quantity
-            }));
+async function resolveItemsToCheckout(userId, { buyNow, productId, quantity, checkoutItems }) {
+    // Direct Purchase
+    if (buyNow) {
+        if (!productId) {
+            const err = new Error('productId is required for buyNow.');
+            err.status = 400;
+            throw err;
         }
 
-        // fetch user details
-        const user = await User.findById(userId).select('profile addresses');
-        const previewItems = itemsToPreview.map(({product, quantity}) => ({
+        const product = await Product.findById(productId);
+        if (!product || !product.isActive) {
+            const err = new Error('Product not found.');
+            err.status = 404;
+            throw err;
+        }
+        if (!quantity || quantity < 1) {
+            const err = new Error('Quantity must be at least 1.');
+            err.status = 400;
+            throw err;
+        }
+        if (quantity > product.stock) {
+            const err = new Error(`Only ${product.stock} items in stock.`);
+            err.status = 400;
+            throw err;
+        }
+
+        return { items: [{ product, quantity }], cartItemIdsToRemove: [] };
+    }
+
+    const cart = await Cart.findOne({ userId }).populate('items.productId');
+    if (!cart || cart.items.length === 0) {
+        const err = new Error('Cart is empty.');
+        err.status = 400;
+        throw err;
+    }
+
+    let selected = [];
+
+    if (checkoutItems && Array.isArray(checkoutItems) && checkoutItems.length > 0) {
+        // Partial Cart Checkout with dynamic quantities
+        const cartItemsMap = new Map(cart.items.map(item => [item.productId?._id.toString(), item]));
+
+        for (const { productId: reqProductId, quantity: reqQty } of checkoutItems) {
+            const cartItem = cartItemsMap.get(reqProductId);
+            
+            if (!cartItem) {
+                const err = new Error(`Product ${reqProductId} is not present in the cart.`);
+                err.status = 400;
+                throw err;
+            }
+            if (!cartItem.productId?.isActive) continue;
+            
+            const parsedQty = Number(reqQty);
+            if (!parsedQty || parsedQty < 1) {
+                const err = new Error(`Invalid quantity provided for product ${reqProductId}.`);
+                err.status = 400;
+                throw err;
+            }
+
+            selected.push({
+                productId: cartItem.productId,
+                quantity: parsedQty 
+            });
+        }
+    } else {
+        selected = cart.items.filter(item => item.productId?.isActive);
+    }
+
+    if (selected.length === 0) {
+        const err = new Error('No valid items selected for checkout.');
+        err.status = 400;
+        throw err;
+    }
+
+    // Validate against current inventory stock
+    const stockErrors = selected
+        .filter(item => item.quantity > item.productId.stock)
+        .map(item => `"${item.productId.name}" only has ${item.productId.stock} unit(s) left.`);
+
+    if (stockErrors.length > 0) {
+        const err = new Error(stockErrors.join(' '));
+        err.status = 400;
+        throw err;
+    }
+
+    return {
+        items: selected.map(item => ({ product: item.productId, quantity: item.quantity })),
+        cartItemIdsToRemove: selected.map(item => item.productId._id.toString())
+    };
+}
+
+// POST /orders/preview
+const previewOrder = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { items } = await resolveItemsToCheckout(userId, req.body);
+ 
+        const user = await User.findById(userId).select('firstName lastName phoneNumber addresses');
+ 
+        const previewItems = items.map(({ product, quantity }) => ({
             productId: product._id,
             name: product.name,
             image: product.images?.[0] || null,
@@ -107,163 +147,151 @@ const previewOrder = async(req, res) => {
             quantity,
             subtotal: product.price * quantity
         }));
-
+ 
         const totalAmount = previewItems.reduce((sum, i) => sum + i.subtotal, 0);
+ 
         res.status(200).json({
             items: previewItems,
             totalAmount,
             customerInfo: {
-                name: `${user.profile?.firstName ?? ''} ${user.profile?.lastName ?? ''}`.trim(),
-                phoneNumber: user.profile?.phoneNumber || null,
-                addresses: user.addresses ?? [],
+                name: `${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim(),
+                phoneNumber: user?.phoneNumber || null,
+                addresses: user?.addresses ?? [],
             },
             paymentMethods: ['Credit Card', 'Bank Transfer', 'QRIS'],
         });
+        console.log(`Previewed order for user ${userId} with ${items.length} item(s).`);
     } catch (error) {
+        if (error.status) {
+            return res.status(error.status).json({ message: error.message });
+        }
         console.error("Error previewing order:", error);
         res.status(500).json({ message: 'Internal server error previewing order.' });
     }
-}
+};
 
 // POST /orders
-const createOrder = async(req, res) => {
+const createOrder = async (req, res) => {
+    const { shippingAddress, paymentMethod } = req.body;
+ 
+    if (!shippingAddress?.street || !shippingAddress?.city ||
+        !shippingAddress?.state || !shippingAddress?.zipCode ||
+        !shippingAddress?.country) {
+        return res.status(400).json({ message: 'Complete shipping address is required.' });
+    }
+ 
+    const validMethods = ['Credit Card', 'Virtual Account', 'Bank Transfer', 'QRIS'];
+    if (!validMethods.includes(paymentMethod)) {
+        return res.status(400).json({ message: `Invalid payment method. Valid options: ${validMethods.join(', ')}` });
+    }
+ 
+    const userId = req.user._id;
+    const session = await mongoose.startSession();
+ 
     try {
-        const userId = req.user._id;
-        const {productIds, buyNow, productId, quantity=1, shippingAddress, paymentMethod} = req.body;
-
-        if (!shippingAddress?.street || !shippingAddress?.city ||
-            !shippingAddress?.state  || !shippingAddress?.zipCode ||
-            !shippingAddress?.country) {
-            return res.status(400).json({ message: 'Complete shipping address is required.' });
-        }
-
-        const validMethods = ['Credit Card', 'Bank Transfer', 'QRIS'];
-        if (!validMethods.includes(paymentMethod)) {
-            return res.status(400).json({ message: `Invalid payment method. Valid options: ${validMethods.join(', ')}` });
-        }
-
-        let itemToOrder = [];
-        let cartItemIdsToRemove = [];
-
-        if (buyNow) {
-            const product = await Product.findById(productId);
-            if (!product) {
-                return res.status(404).json({ message: 'Product not found.' });
-            }
-
-            if (quantity > product.stock) {
-                return res.status(400).json({ message: `Only ${product.stock} items in stock.` });
-            }
-            itemToOrder = [{product, quantity}];
-        } else {
-            const cart = await Cart.findOne({userId}).populate('items.productId');
-            if (!cart || cart.items.length === 0) {
-                return res.status(400).json({ message: 'Cart is empty.' });
-            }
-
-            const selected = cart.items.filter( items => {
-                if (!items.productId?.isActive) return false;
-                if (productIds && productIds.length > 0) {
-                    return productIds.includes(items.productId._id.toString());
+        let savedOrder;
+ 
+        await session.withTransaction(async () => {
+            const { items, cartItemIdsToRemove } = await resolveItemsToCheckout(userId, req.body);
+ 
+            const orderItems = [];
+            for (const { product, quantity: qty } of items) {
+                // Atomic check-and-decrement: only succeeds if stock is still sufficient.
+                const updatedProduct = await Product.findOneAndUpdate(
+                    { _id: product._id, stock: { $gte: qty } },
+                    { $inc: { stock: -qty } },
+                    { session, new: true }
+                );
+ 
+                if (!updatedProduct) {
+                    const err = new Error(`"${product.name}" no longer has enough stock.`);
+                    err.status = 409;
+                    throw err;
                 }
-                return true;
-            });
-
-            if (selected.length === 0) {
-                return res.status(400).json({ message: 'No valid items to order.' });
+ 
+                orderItems.push({
+                    productId: product._id,
+                    productName: product.name,
+                    price: product.price,
+                    quantity: qty,
+                    total: product.price * qty
+                });
             }
-
-            const stockErrors = [];
-            for (const item of selected) {
-                if (item.quantity > item.productId.stock) {
-                    stockErrors.push(`"${item.productId.name}" only has ${item.productId.stock} unit(s) left.`);
-                }
+ 
+            const totalAmount = orderItems.reduce((sum, i) => sum + i.total, 0);
+ 
+            const [order] = await Order.create([{
+                userId,
+                orderNumber: generateOrderNumber(),
+                items: orderItems,
+                totalAmount,
+                shippingAddress,
+                paymentMethod,
+                status: 'Pending',
+                paymentStatus: 'Pending',
+            }], { session });
+ 
+            if (cartItemIdsToRemove.length > 0) {
+                await Cart.findOneAndUpdate(
+                    { userId },
+                    { $pull: { items: { productId: { $in: cartItemIdsToRemove } } } },
+                    { session }
+                );
             }
-            if (stockErrors.length > 0) {
-                return res.status(400).json({ message: stockErrors.join(' ') });
-            }
-            itemToOrder = selected.map( item => ({
-                product: item.productId,
-                quantity: item.quantity
-            }));
-            cartItemIdsToRemove = selected.map(item => item.productId._id.toString());
-        }
-
-        // Create order items and deduct stock
-        const orderItems = [];
-        for(const {product, quantity: qty} of itemToOrder) {
-            orderItems.push({
-                productId: product._id,
-                productName: product.name,
-                price: product.price,
-                quantity: qty,
-                total: product.price * qty
-            });
-            await Product.findByIdAndUpdate(product._id, {$inc: {stock: -qty}});
-        }
-
-        const totalAmount = orderItems.reduce((sum, i) => sum + i.total, 0);
-        const order = new Order({
-            userId,
-            orderNumber:     generateOrderNumber(),
-            items:           orderItems,
-            totalAmount,
-            shippingAddress,
-            paymentMethod,
-            status:          'Pending',
-            paymentStatus:   'Pending',
+ 
+            savedOrder = order;
         });
-        await order.save();
-
-        if (!buyNow && cartItemIdsToRemove.length > 0) {
-            await Cart.findOneAndUpdate({userId}, 
-                {$pull: {items: {productId: { $in: cartItemIdsToRemove}}}}
-            );
-        }
-        res.status(201).json({ message: 'Order placed successfully.', order,});
+ 
+        res.status(201).json({ message: 'Order placed successfully.', order: savedOrder });
     } catch (error) {
+        if (error.status) {
+            return res.status(error.status).json({ message: error.message });
+        }
         console.error('createOrder error:', error);
         res.status(500).json({ message: 'Internal server error.' });
+    } finally {
+        session.endSession();
     }
-}
-
+};
+ 
 function generateOrderNumber() {
     const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
     const rand = crypto.randomBytes(4).toString('hex').toUpperCase();
-    return `HMA-${date}-${rand}`;   // e.g. HMA-20250517-3F9A1C2B
+    return `HMA-${date}-${rand}`;
 }
-
-// PROCESS PAYMENT
-// POST /orders/:orderId/pay
-const payOrder = async(req, res) => {
+ 
+// POST /orders/:id/pay
+const payOrder = async (req, res) => {
     try {
-        const {orderId} = req.params;
+        const { orderId } = req.params ?? req.body;
         const userId = req.user._id;
-        const order = await Order.findOne({_id: orderId, userId: userId});
+ 
+        // Atomic transition: only proceeds if currently Pending, prevents double-processing
+        // from duplicate/racing payment callbacks.
+        const order = await Order.findOneAndUpdate(
+            { _id: req.params.id ?? orderId, userId, paymentStatus: 'Pending', status: { $ne: 'Cancelled' } },
+            { paymentStatus: 'Completed', status: 'Processing' },
+            { new: true }
+        );
+ 
         if (!order) {
-            return res.status(404).json({ message: 'Order not found.' });
-        }
-
-        if (order.paymentStatus === 'Completed') {
+            const existing = await Order.findOne({ _id: req.params.id ?? orderId, userId });
+            if (!existing) {
+                return res.status(404).json({ message: 'Order not found.' });
+            }
+            if (existing.status === 'Cancelled') {
+                return res.status(400).json({ message: 'Cannot pay a cancelled order.' });
+            }
             return res.status(400).json({ message: 'Order is already paid.' });
         }
-
-        if (order.status === 'Cancelled') {
-            return res.status(400).json({ message: 'Cannot pay a cancelled order.' });
-        }
-
-        // PAYEMENT GATEWAY INTEGRATION
-
-        order.paymentStatus = 'Completed';
-        order.status = 'Processing';
-        await order.save();
+ 
+        // TODO: midtrans payment gateway integration
 
         res.status(200).json({ message: 'Payment successful, order is now processing.', order });
-
     } catch (error) {
         console.error('payOrder error:', error);
         res.status(500).json({ message: 'Internal server error.' });
     }
-}
+};
 
-export default {getMyOrders, previewOrder, createOrder, payOrder};
+export default {getMyOrders, getOrderDetail, previewOrder, createOrder, payOrder};

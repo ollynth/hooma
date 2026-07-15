@@ -1,0 +1,5 @@
+$kind: http-request
+name: Get Cust Order Details
+url: "{{BASE_URL}}/orders/6a21174a0a457f2970d40d22"
+method: GET
+order: 3000

@@ -61,7 +61,7 @@ const orderSchema = new Schema({
     },
     paymentMethod: {
         type: String,
-        enum: ['Credit Card', 'PayPal', 'Bank Transfer', 'QRIS'],
+        enum: ['Credit Card', 'Virtual Account', 'Bank Transfer', 'QRIS'],
         required: true
     },
     paymentStatus: {
